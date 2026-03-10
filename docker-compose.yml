@@ -12,7 +12,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U weAdmin"]
+      test: [ "CMD-SHELL", "pg_isready -U weAdmin" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -56,5 +56,21 @@ services:
     depends_on:
       - backend
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: schulnetz-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: weadmin@local.com
+      PGADMIN_DEFAULT_PASSWORD: pass123word
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    depends_on:
+      - db
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
 volumes:
   db-data:
+  pgadmin-data:
