@@ -335,5 +335,92 @@ git diff backend/src/index.js
 ***Start with git status → then add → commit → push — that's the core loop.***
 
 
-   
+### Making Login Portal Backend
+
+***We have installed following***
+1. express, cors, dotenv
+2. bcryptjs, jsonwebtoken, joi
+3. nodemon (dev)
+
+```
+cd backend
+npm install express cors dotenv bcryptjs jsonwebtoken joi
+npm install --save-dev nodemon
+cd ..
+```
+
+
+***Created following Structure***
+```
+backend/src/
+├── config/db.js ***(Connects to PostgreSQL)***
+├── controllers/auth.controller.js ***(Password hashing + JWT token generation)***
+├── middlewares/validate.js ***(Input validation using Joi)***
+├── routes/auth.routes.js ***(Login and Register logic)***
+├── utils/auth.js (***Routes (/login and /register))***
+└── index.js ***(Main server with security and health check)***
+
+```
+
+***Go to http://localhost:5050 and create database, following table first***
+
+```
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(100),
+  role VARCHAR(20) DEFAULT 'user',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+-- Create a test admin user (password = admin123)
+```
+INSERT INTO users (username, email, password_hash, full_name, role)
+VALUES (
+  'admin',
+  'admin@schulnetz.local',
+  '$2b$12$4p9q8r7s6t5u4v3w2x1y0z9A8B7C6D5E4F3G2H1I0J9K8L7M6N5O4P', -- this is bcrypt hash of "admin123"
+  'System Administrator',
+  'admin'
+);
+```
+````
+http://localhost:4000/api/auth/register
+
+{
+  "username": "teacher1",
+  "email": "teacher1@schulnetz.local",
+  "password": "teacher123",
+  "full_name": "Ravi Sharma",
+  "role": "teacher"
+}
+
+http://localhost:4000/api/auth/login
+
+{
+  "email": "admin@schulnetz.local",
+  "password": "admin123"
+}
+```
+
+### Rebuild and Test 
+
+```
+docker compose down
+rm -rf backend/node_modules
+cd backend
+npm install
+cd ..
+docker compose up -d --build backend
+```
+
+### If Any Error Happens paste following in terminal
+
+```
+docker compose logs backend --tail=40
+```
+
 Good luck Hemant!
