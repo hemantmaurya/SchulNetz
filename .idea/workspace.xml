@@ -5,7 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0d0dc39-05f4-4a83-9a46-0f131c14abfd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/postcss.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Alert.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Button.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/DashboardCards.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Input.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Layout.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ProtectedRoute.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Sidebar.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Topbar.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/config/menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/features/courses/CourseForm.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/features/courses/CourseTable.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/features/courses/CoursesPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/api.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/AdminDashboard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/GeneralDashboard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/tailwind.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
