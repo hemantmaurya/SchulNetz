@@ -3,6 +3,10 @@ import API from "../lib/api.js";
 
 function Testing() {
   const [records, setRecords] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 5;
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -14,27 +18,29 @@ function Testing() {
     lastName: ""
   });
 
-  const fetchRecords = async () => {
+  const fetchRecords = async (page = 1) => {
     try {
-      const res = await API.get("/api/testing");
-      setRecords(res.data);
+      const res = await API.get(`/api/testing?page=${page}&limit=${limit}`);
+      setRecords(res.data.data || []);
+      setPagination(res.data.pagination || {});
+      setCurrentPage(page);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchRecords();
+    fetchRecords(1);
   }, []);
 
-  // Add New Record
+  // Add Record
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     try {
       await API.post("/api/testing", formData);
       setShowAddModal(false);
       setFormData({ name: "", middleName: "", lastName: "" });
-      fetchRecords();
+      fetchRecords(1);
     } catch (err) {
       alert("Failed to add record");
     }
@@ -56,7 +62,7 @@ function Testing() {
     try {
       await API.put(`/api/testing/${currentRecord.id}`, formData);
       setShowEditModal(false);
-      fetchRecords();
+      fetchRecords(currentPage);
     } catch (err) {
       alert("Failed to update record");
     }
@@ -72,7 +78,7 @@ function Testing() {
     try {
       await API.delete(`/api/testing/${currentRecord.id}`);
       setShowDeleteModal(false);
-      fetchRecords();
+      fetchRecords(currentPage);
     } catch (err) {
       alert("Failed to delete record");
     }
@@ -90,49 +96,61 @@ function Testing() {
         </button>
       </div>
 
-      {/* Records Table */}
+      {/* Table */}
       <div className="bg-white rounded-2xl shadow">
         <h2 className="text-xl font-semibold p-6 border-b">All Records</h2>
         <div className="p-6">
-          {records.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No records found.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3">ID</th>
-                  <th className="text-left py-3">Name</th>
-                  <th className="text-left py-3">Middle Name</th>
-                  <th className="text-left py-3">Last Name</th>
-                  <th className="text-right py-3">Actions</th>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left py-3">ID</th>
+                <th className="text-left py-3">Name</th>
+                <th className="text-left py-3">Middle Name</th>
+                <th className="text-left py-3">Last Name</th>
+                <th className="text-right py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {records.map(record => (
+                <tr key={record.id} className="border-b hover:bg-gray-50">
+                  <td className="py-4">{record.id}</td>
+                  <td className="py-4">{record.name}</td>
+                  <td className="py-4">{record.middle_name}</td>
+                  <td className="py-4">{record.last_name}</td>
+                  <td className="py-4 text-right">
+                    <button onClick={() => handleEditClick(record)} className="text-blue-600 hover:text-blue-800 mr-4">Edit</button>
+                    <button onClick={() => handleDeleteClick(record)} className="text-red-600 hover:text-red-800">Delete</button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {records.map(record => (
-                  <tr key={record.id} className="border-b hover:bg-gray-50">
-                    <td className="py-4">{record.id}</td>
-                    <td className="py-4">{record.name}</td>
-                    <td className="py-4">{record.middle_name}</td>
-                    <td className="py-4">{record.last_name}</td>
-                    <td className="py-4 text-right">
-                      <button 
-                        onClick={() => handleEditClick(record)}
-                        className="text-blue-600 hover:text-blue-800 mr-4"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteClick(record)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center mt-6 text-sm">
+            <p className="text-gray-600">
+              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, pagination.totalRecords || 0)} of {pagination.totalRecords || 0} records
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => fetchRecords(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border rounded-lg disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2">
+                Page {currentPage} of {pagination.totalPages || 1}
+              </span>
+              <button
+                onClick={() => fetchRecords(currentPage + 1)}
+                disabled={currentPage === (pagination.totalPages || 1)}
+                className="px-4 py-2 border rounded-lg disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -179,18 +197,8 @@ function Testing() {
             <h2 className="text-2xl font-semibold mb-2">Delete Record?</h2>
             <p className="text-gray-600 mb-8">This action cannot be undone.</p>
             <div className="flex gap-4">
-              <button 
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-4 border rounded-2xl"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleDeleteConfirm}
-                className="flex-1 py-4 bg-red-600 text-white rounded-2xl"
-              >
-                Yes, Delete
-              </button>
+              <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-4 border rounded-2xl">Cancel</button>
+              <button onClick={handleDeleteConfirm} className="flex-1 py-4 bg-red-600 text-white rounded-2xl">Yes, Delete</button>
             </div>
           </div>
         </div>

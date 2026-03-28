@@ -1,38 +1,59 @@
 import pool from "../config/db.js";
 
+// CREATE
 export const testingSave = async (req, res) => {
     const { name, middleName, lastName } = req.body;
-
     try {
         const result = await pool.query(
             `INSERT INTO testing (name, middle_name, last_name) 
-             VALUES ($1, $2, $3) 
-             RETURNING *`,
+             VALUES ($1, $2, $3) RETURNING *`,
             [name, middleName, lastName]
         );
-
         res.status(201).json({
             success: true,
             message: "Record added successfully!",
             data: result.rows[0]
         });
     } catch (error) {
-        console.error("Error saving record:", error);
+        console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// READ (with pagination)
 export const getTestingAll = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const offset = (page - 1) * limit;
+
     try {
-        const result = await pool.query("SELECT * FROM testing ORDER BY id DESC");
-        res.json(result.rows);
+        const countResult = await pool.query("SELECT COUNT(*) FROM testing");
+        const total = parseInt(countResult.rows[0].count);
+
+        const result = await pool.query(
+            `SELECT * FROM testing 
+             ORDER BY id DESC 
+             LIMIT $1 OFFSET $2`,
+            [limit, offset]
+        );
+
+        res.json({
+            success: true,
+            data: result.rows,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalRecords: total,
+                limit: limit
+            }
+        });
     } catch (error) {
-        console.error("Error fetching records:", error);
-        res.status(500).json({ success: false, message: "Error fetching records" });
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// New: Update Record
+// UPDATE
 export const testingUpdate = async (req, res) => {
     const { id } = req.params;
     const { name, middleName, lastName } = req.body;
@@ -56,12 +77,12 @@ export const testingUpdate = async (req, res) => {
             data: result.rows[0]
         });
     } catch (error) {
-        console.error("Error updating record:", error);
+        console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// New: Delete Record
+// DELETE
 export const testingDelete = async (req, res) => {
     const { id } = req.params;
 
@@ -77,7 +98,7 @@ export const testingDelete = async (req, res) => {
             message: "Record deleted successfully!"
         });
     } catch (error) {
-        console.error("Error deleting record:", error);
+        console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
