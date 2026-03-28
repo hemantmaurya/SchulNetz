@@ -32,14 +32,8 @@ function AppRouter() {
                 />
 
                 {/* Testing Page - Inside Layout */}
-                <Route 
-                    path="/testing" 
-                    element={
-                        <Layout>
-                            <Testing />
-                        </Layout>
-                    } 
-                />
+                <Route path="/testing" element={ <Layout> <Testing /> </Layout> } />
+
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
