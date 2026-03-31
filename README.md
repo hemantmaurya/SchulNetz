@@ -487,3 +487,4 @@ npm install lucide-react
 ***Done! Now you can use Tailwind CSS and Lucide icons in your React components***
 
 Good luck Hemant!
+Student feature added by Kashish
