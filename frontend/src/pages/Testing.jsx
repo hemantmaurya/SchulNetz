@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import API from "../lib/api.js";
+import { Edit2, Trash2 } from "lucide-react";
 
 function Testing() {
   const [records, setRecords] = useState([]);
@@ -170,9 +171,24 @@ function Testing() {
                   <td className="py-5 px-8 font-medium">{record.name}</td>
                   <td className="py-5 px-8 text-gray-600">{record.middle_name || "—"}</td>
                   <td className="py-5 px-8 text-gray-600">{record.last_name}</td>
-                  <td className="py-5 px-8 text-right space-x-6">
-                    <button onClick={() => handleEditClick(record)} className="text-blue-600 hover:underline">Edit</button>
-                    <button onClick={() => handleDeleteClick(record)} className="text-red-600 hover:underline">Delete</button>
+                  <td className="py-6 px-8 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                          onClick={() => handleEditClick(record)}
+                          className="p-3 text-gray-500 hover:text-black hover:bg-gray-100 rounded-2xl transition-all"
+                          title="Edit"
+                      >
+                        <Edit2 size={19} strokeWidth={2.5} />
+                      </button>
+
+                      <button
+                          onClick={() => handleDeleteClick(record)}
+                          className="p-3 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all"
+                          title="Delete"
+                      >
+                        <Trash2 size={19} strokeWidth={2.5} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

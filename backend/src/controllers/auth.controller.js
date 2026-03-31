@@ -9,7 +9,6 @@ const login = async (req, res) => {
             'SELECT * FROM users WHERE email = $1 AND is_active = true',
             [email]
         );
-
         if (result.rows.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
