@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0d0dc39-05f4-4a83-9a46-0f131c14abfd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/config/initDb.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/config/initDb.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/database/migrations/001_create_users_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/database/migrations/001_create_users_table.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/make-migration.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/make-migration.sh" afterDir="false" />
-    </list>
+    <list default="true" id="b0d0dc39-05f4-4a83-9a46-0f131c14abfd" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -82,7 +77,7 @@
       <workItem from="1774193163496" duration="7041000" />
       <workItem from="1774345029565" duration="3912000" />
       <workItem from="1774368273170" duration="51495000" />
-      <workItem from="1775130543641" duration="2637000" />
+      <workItem from="1775130543641" duration="2993000" />
     </task>
     <servers />
   </component>
