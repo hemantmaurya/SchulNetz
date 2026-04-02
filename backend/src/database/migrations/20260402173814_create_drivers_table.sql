@@ -1,22 +1,6 @@
-#!/bin/bash
-
-if [ -z "$1" ]; then
-  echo "Usage: ./scripts/make-migration.sh migration_name"
-  echo "Example: ./scripts/make-migration.sh create_students_table"
-  exit 1
-fi
-
-TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-FILENAME="${TIMESTAMP}_$1.sql"
-FILEPATH="backend/src/database/migrations/$FILENAME"
-
-# Create directory if it doesn't exist
-mkdir -p backend/src/database/migrations
-
-cat > "$FILEPATH" << EOT
--- $FILENAME
--- Description: $1
--- Created: $(date)
+-- 20260402173814_create_drivers_table.sql
+-- Description: create_drivers_table
+-- Created: Thu Apr  2 17:38:14 IST 2026
 
 -- =============================================
 -- Laravel-style Migration Template
@@ -53,14 +37,3 @@ CREATE TABLE IF NOT EXISTS your_table_name (
 -- TODO: Add appropriate indexes and constraints
 -- =============================================
 
-EOT
-
-echo "✅ Laravel-style migration created successfully!"
-echo "📁 File: $FILEPATH"
-echo ""
-echo "Next steps:"
-echo "1. Open the file and replace 'your_table_name' with actual name"
-echo "2. Add your columns"
-echo "3. Run: docker compose restart backend"
-echo ""
-echo "Happy coding! 🚀"

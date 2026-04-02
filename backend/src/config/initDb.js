@@ -1,38 +1,22 @@
 import pool from "./db.js";
 import runMigrations from "../database/migrate.js";
+import runSeeders from "../database/seed.js";
 
 const initDatabase = async () => {
   try {
     console.log("🌱 Starting database initialization...");
 
-    // IMPORTANT: Run migrations first
+    // Step 1: Run Migrations first (create tables)
     await runMigrations();
 
-    // Keep your testing table
-    console.log("🔧 Ensuring testing table exists...");
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS testing (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        middle_name VARCHAR(100),
-        last_name VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    const countResult = await pool.query("SELECT COUNT(*) FROM testing");
-    if (parseInt(countResult.rows[0].count) === 0) {
-      await pool.query(`
-        INSERT INTO testing (name, middle_name, last_name) 
-        VALUES 
-          (Rahul, Kumar, Sharma),
-          (Priya, Singh, Rathore),
-          (Amit, Kumar, Verma)
-      `);
-      console.log("✅ Dummy data inserted into testing table");
-    }
+    // Step 2: Run Seeders (insert default admin user)
+    await runSeeders();
 
     console.log("✅ Database initialization completed successfully!");
+    console.log("   Default Admin Login:");
+    console.log("   Email    : admin@schulnetz.com");
+    console.log("   Password : admin123");
+
   } catch (error) {
     console.error("❌ Database initialization failed:", error.message);
   }
