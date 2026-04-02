@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="b0d0dc39-05f4-4a83-9a46-0f131c14abfd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/controllers/auth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/controllers/auth.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config/menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config/menu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Testing.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Testing.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/config/initDb.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/config/initDb.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +33,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/laravelLikeMigrationSeeder",
     "javascript.preferred.runtime.type.id": "node",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/hemantmaurya/Documents/shaz/SchulNetz",
@@ -81,7 +80,7 @@
       <workItem from="1773124902314" duration="9243000" />
       <workItem from="1774193163496" duration="7041000" />
       <workItem from="1774345029565" duration="3912000" />
-      <workItem from="1774368273170" duration="44304000" />
+      <workItem from="1774368273170" duration="50420000" />
     </task>
     <servers />
   </component>

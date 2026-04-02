@@ -1,12 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
-import testingRoutes from './routes/testing.routes.js'
+import testingRoutes from './routes/testing.routes.js';
+import initDatabase from "./config/initDb.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Initialize Database (migrations + testing table)
+initDatabase().catch(err => {
+    console.error("Failed to initialize database:", err);
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
