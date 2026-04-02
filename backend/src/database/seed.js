@@ -5,14 +5,14 @@ const runSeeders = async () => {
   console.log("🌱 Running database seeders...");
 
   try {
-    // Check if default admin already exists
-    const existing = await pool.query(
+    // Smart check: Create default admin only if it doesn't exist
+    const existingAdmin = await pool.query(
       "SELECT 1 FROM users WHERE email = $1", 
       ["admin@schulnetz.com"]
     );
 
-    if (existing.rows.length > 0) {
-      console.log("✓ Default admin user already exists");
+    if (existingAdmin.rows.length > 0) {
+      console.log("✓ Default admin user already exists - skipping seeder");
       return;
     }
 
@@ -29,7 +29,7 @@ const runSeeders = async () => {
       "admin"
     ]);
 
-    console.log("✅ Default admin user created!");
+    console.log("✅ Default admin user created successfully!");
     console.log("   Email    : admin@schulnetz.com");
     console.log("   Password : admin123");
     console.log("   Role     : admin");

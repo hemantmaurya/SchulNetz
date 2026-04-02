@@ -6,16 +6,13 @@ const initDatabase = async () => {
   try {
     console.log("🌱 Starting database initialization...");
 
-    // Step 1: Run Migrations first (create tables)
+    // Step 1: Always run migrations (safe and fast)
     await runMigrations();
 
-    // Step 2: Run Seeders (insert default admin user)
+    // Step 2: Run seeders only if needed (smart check)
     await runSeeders();
 
     console.log("✅ Database initialization completed successfully!");
-    console.log("   Default Admin Login:");
-    console.log("   Email    : admin@schulnetz.com");
-    console.log("   Password : admin123");
 
   } catch (error) {
     console.error("❌ Database initialization failed:", error.message);
