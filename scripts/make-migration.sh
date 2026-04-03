@@ -2,65 +2,50 @@
 
 if [ -z "$1" ]; then
   echo "Usage: ./scripts/make-migration.sh migration_name"
-  echo "Example: ./scripts/make-migration.sh create_students_table"
+  echo "Example: ./scripts/make-migration.sh create_testing_table"
   exit 1
 fi
+
+# Extract table name from migration name (e.g. create_testing_table → testing)
+TABLE_NAME=$(echo "$1" | sed 's/create_//' | sed 's/_table//')
 
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 FILENAME="${TIMESTAMP}_$1.sql"
 FILEPATH="backend/src/database/migrations/$FILENAME"
 
-# Create directory if it doesn't exist
 mkdir -p backend/src/database/migrations
 
 cat > "$FILEPATH" << EOT
 -- $FILENAME
 -- Description: $1
+-- Table: $TABLE_NAME
 -- Created: $(date)
 
--- =============================================
--- Laravel-style Migration Template
--- =============================================
-
--- Drop table if exists (optional - useful during development)
--- DROP TABLE IF EXISTS your_table_name;
-
-CREATE TABLE IF NOT EXISTS your_table_name (
+CREATE TABLE IF NOT EXISTS $TABLE_NAME (
     id SERIAL PRIMARY KEY,
     
     -- Add your columns here
     -- name VARCHAR(100) NOT NULL,
-    -- email VARCHAR(255) UNIQUE NOT NULL,
-    -- status VARCHAR(20) DEFAULT 'active',
+    -- code VARCHAR(50) UNIQUE,
+    -- description TEXT,
     
-    -- Standard Laravel-style timestamp columns
+    -- Standard timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL                     -- Soft Delete support
+    deleted_at TIMESTAMP NULL                    -- Soft Delete support
 );
 
--- Add indexes for better performance (recommended)
--- CREATE INDEX IF NOT EXISTS idx_your_table_name_status ON your_table_name(status);
--- CREATE INDEX IF NOT EXISTS idx_your_table_name_deleted_at ON your_table_name(deleted_at);
+-- Recommended indexes
+-- CREATE INDEX IF NOT EXISTS idx_${TABLE_NAME}_name ON $TABLE_NAME(name);
+-- CREATE INDEX IF NOT EXISTS idx_${TABLE_NAME}_deleted_at ON $TABLE_NAME(deleted_at);
 
--- Add comments (very useful for documentation)
--- COMMENT ON TABLE your_table_name IS 'Description of this table';
--- COMMENT ON COLUMN your_table_name.deleted_at IS 'NULL = active record, timestamp = soft deleted';
-
--- =============================================
--- TODO: Replace 'your_table_name' with actual table name
--- TODO: Add your specific columns
--- TODO: Add appropriate indexes and constraints
--- =============================================
+COMMENT ON TABLE $TABLE_NAME IS 'Table for $TABLE_NAME management';
 
 EOT
 
-echo "✅ Laravel-style migration created successfully!"
+echo "✅ Smart migration created successfully!"
 echo "📁 File: $FILEPATH"
+echo "🗃️  Table name: $TABLE_NAME"
 echo ""
-echo "Next steps:"
-echo "1. Open the file and replace 'your_table_name' with actual name"
-echo "2. Add your columns"
-echo "3. Run: docker compose restart backend"
-echo ""
-echo "Happy coding! 🚀"
+echo "Next step: Restart backend to apply"
+echo "   docker compose restart backend"
