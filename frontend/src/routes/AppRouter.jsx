@@ -1,42 +1,52 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Login from "../pages/Login";
 import Layout from "../components/layout/Layout";
 import AdminDashboard from "../pages/AdminDashboard";
 import GeneralDashboard from "../pages/GeneralDashboard";
 import Testing from "../pages/Testing";
+// import CoursesPage from "../pages/CoursesPage.jsx";
+import CoursesPage from "../pages/CoursesPage";
 
 function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Login/>}/>
 
                 {/* Admin Route */}
-                <Route 
-                    path="/admin" 
+                <Route
+                    path="/admin"
                     element={
                         <Layout>
-                            <AdminDashboard />
+                            <AdminDashboard/>
                         </Layout>
-                    } 
+                    }
                 />
 
                 {/* Normal User Dashboard */}
-                <Route 
-                    path="/dashboard" 
+                <Route
+                    path="/dashboard"
                     element={
                         <Layout>
-                            <GeneralDashboard />
+                            <GeneralDashboard/>
                         </Layout>
-                    } 
+                    }
                 />
 
                 {/* Testing Page - Inside Layout */}
-                <Route path="/testing" element={ <Layout> <Testing /> </Layout> } />
+                <Route path="/testing" element={<Layout> <Testing/> </Layout>}/>
+                <Route
+                    path="/courses"
+                    element={
+                        <Layout>
+                            <CoursesPage />
+                        </Layout>
+                    }
+                />
 
-
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route path="*" element={<Navigate to="/"/>}/>
             </Routes>
+
         </BrowserRouter>
     );
 }
