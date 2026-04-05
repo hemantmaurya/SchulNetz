@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import testingRoutes from './routes/testing.routes.js';
+// import coursesRoutes from './routes/courses.routes.js';
+import coursesRoutes from "./routes/courses.routes.js";
 import initDatabase from "./config/initDb.js";
 
 const app = express();
@@ -18,6 +20,9 @@ initDatabase().catch(err => {
 app.use('/api/auth', authRoutes);
 
 app.use('/api/testing', testingRoutes);
+
+// app.use('/api/courses', coursesRoutes);
+app.use("/api/courses", coursesRoutes);
 
 
 
