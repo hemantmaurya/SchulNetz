@@ -27,6 +27,16 @@ export const menuItems = [
                 name: "Testing",
                 path: "/testing",
             },
+            {
+                name: "Academic Calendar",
+                path: "/academic-calendar"
+            },
+            {
+                name: "Attendance",
+                path: "/attendance",
+
+            }
+
         ],
     },
     {
