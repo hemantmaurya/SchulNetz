@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Login from "../pages/Login";
 import Layout from "../components/layout/Layout";
 import AdminDashboard from "../pages/AdminDashboard";
 import GeneralDashboard from "../pages/GeneralDashboard";
 import Testing from "../pages/Testing";
-import Roles from "../features/roles/roles.jsx"; 
-import Student from "../features/student/student.jsx"; 
+import Roles from "../features/roles/roles.jsx";
+import Student from "../features/student/student.jsx";
 import AttendanceMaster from "../pages/attendance_master.jsx";
 import TakeAttendance from "../pages/Take_attendance.jsx";
 import Attendance from "../pages/Attendance.jsx";
@@ -19,6 +19,8 @@ import CourseSemSub from "../pages/CourseSemSub.jsx";
 
 
 
+// import CoursesPage from "../pages/CoursesPage.jsx";
+import CoursesPage from "../pages/CoursesPage";
 
 function AppRouter() {
     return (
@@ -27,36 +29,36 @@ function AppRouter() {
                 <Route path="/" element={<Login />} />
 
                 {/* Admin Route */}
-                <Route 
-                    path="/admin" 
+                <Route
+                    path="/admin"
                     element={
                         <Layout>
                             <AdminDashboard />
                         </Layout>
-                    } 
+                    }
                 />
 
                 {/* Normal User Dashboard */}
-                <Route 
-                    path="/dashboard" 
+                <Route
+                    path="/dashboard"
                     element={
                         <Layout>
                             <GeneralDashboard />
                         </Layout>
-                    } 
+                    }
                 />
 
                 {/* Testing Page - Inside Layout */}
                 <Route path="/testing" element={ <Layout> <Testing /> </Layout> } />
-                
+
                 {/*roles page*/}
-                <Route 
-                path="/roles" 
+                <Route
+                path="/roles"
                 element={
                     <Layout>
                     <Roles />
                     </Layout>
-                } 
+                }
                 />
                 {/*students page*/}
                 <Route
@@ -67,19 +69,19 @@ function AppRouter() {
                     </Layout>
                 }
                 />
-                
-                <Route 
-                    path="/attendance-master" 
+
+                <Route
+                    path="/attendance-master"
                     element={
                         <Layout>
                             <AttendanceMaster />
                         </Layout>
-                    } 
+                    }
                 />
 
-                <Route 
-                    path="/take-attendance/:id" 
-                    element={<Layout><TakeAttendance /></Layout>} 
+                <Route
+                    path="/take-attendance/:id"
+                    element={<Layout><TakeAttendance /></Layout>}
                 />
 
                  <Route
@@ -101,53 +103,75 @@ function AppRouter() {
                 />
 
                 <Route path="/academic-calendar" element={<Layout><AcademicCalendar /></Layout>}
-                
+
                 />
-                
-                <Route 
-                 path="/view-attendance" 
+
+                <Route
+                 path="/view-attendance"
                     element={
                         <Layout>
                             <ViewAttendance />
                         </Layout>
-                    } 
+                    }
                 />
 
-                <Route 
-                    path="/semesters" 
+                <Route
+                    path="/semesters"
                     element={
                         <Layout>
                             <Semester />
                         </Layout>
-                    } 
+                    }
                 />
 
-                <Route 
-                    path="/subjects" 
+                <Route
+                    path="/subjects"
                     element={
                         <Layout>
                             <Subject />
                         </Layout>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/courses" 
+                <Route
+                    path="/courses"
                     element={
                         <Layout>
                             < Courses/>
                         </Layout>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/coursesemsub" 
+                <Route
+                    path="/coursesemsub"
                     element={
                         <Layout>
                             < CourseSemSub/>
                         </Layout>
-                    } 
+                    }
                 />
-                
 
+
+
+                {/*roles page*/}
+                <Route
+                path="/roles"
+                element={
+                    <Layout>
+                    <Roles />
+                    </Layout>
+                }
+                />
+                {/*students page*/}
+                <Route
+                path="/students"
+                element={
+                    <Layout>
+                    <Student />
+                    </Layout>
+                }
+                />
+
+
+                <Route path="*" element={<Navigate to="/" />} />
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
