@@ -6,6 +6,13 @@ import GeneralDashboard from "../pages/GeneralDashboard";
 import Testing from "../pages/Testing";
 import Roles from "../features/roles/roles.jsx"; 
 import Student from "../features/student/student.jsx"; 
+import AttendanceMaster from "../pages/attendance_master.jsx";
+import TakeAttendance from "../pages/Take_attendance.jsx";
+import Attendance from "../pages/Attendance.jsx";
+import ViewAttendance from "../pages/ViewAttendance.jsx";
+
+import AcademicCalendar from "../pages/AcademicCalender.jsx";
+<page></page>;
 
 function AppRouter() {
     return (
@@ -53,6 +60,51 @@ function AppRouter() {
                     <Student />
                     </Layout>
                 }
+                />
+                
+                <Route 
+                    path="/attendance-master" 
+                    element={
+                        <Layout>
+                            <AttendanceMaster />
+                        </Layout>
+                    } 
+                />
+
+                <Route 
+                    path="/take-attendance/:id" 
+                    element={<Layout><TakeAttendance /></Layout>} 
+                />
+
+                 <Route
+                    path="/attendance"
+                    element={
+                        <Layout>
+                            <Attendance />
+                        </Layout>
+                    }
+                />
+
+                <Route
+                    path="/attendance/mark"
+                    element={
+                        <Layout>
+                            <h1 className="p-8 text-2xl">Attendance Marking Page (Next Lesson)</h1>
+                        </Layout>
+                    }
+                />
+
+                <Route path="/academic-calendar" element={<Layout><AcademicCalendar /></Layout>}
+                
+                />
+                
+                <Route 
+                 path="/view-attendance" 
+                    element={
+                        <Layout>
+                            <ViewAttendance />
+                        </Layout>
+                    } 
                 />
 
 

@@ -12,17 +12,27 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setMessage("");
+         
+        
+        
+
+
 
         try {
             const res = await API.post("/api/auth/login", {   // ← Fixed: added /api
                 email,
                 password,
+
             });
 
             const { token, user } = res.data;
 
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
+
+
+            console.log("running");
+
 
             setMessage("Login successful!");
 
