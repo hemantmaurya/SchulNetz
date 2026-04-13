@@ -4,13 +4,12 @@ import API from "../../lib/api.js";
 function Roles() {
   const [roles, setRoles] = useState([]);
   const [roleName, setRoleName] = useState("");
+  const [editId, setEditId] = useState(null); 
 
-  //  FETCH ROLES
+  // FETCH ROLES
   const fetchRoles = async () => {
     try {
-      const res = await API.get("/api/roles");   //  FIXED
-
-      console.log("GET RESPONSE 👉", res.data);
+      const res = await API.get("/api/roles");
 
       const data =
         res.data?.data ||
@@ -28,24 +27,51 @@ function Roles() {
     fetchRoles();
   }, []);
 
-  //  ADD ROLE
+  // ADD / UPDATE ROLE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log("SENDING 👉", roleName);
-
-      await API.post("/api/roles", {   //  FIXED
-        role_name: roleName
-      });
+      if (editId) {
+        //  UPDATE
+        await API.put(`/api/roles/${editId}`, {
+          role_name: roleName,
+        });
+      } else {
+        //  CREATE
+        await API.post("/api/roles", {
+          role_name: roleName,
+        });
+      }
 
       setRoleName("");
+      setEditId(null); // reset
+      fetchRoles();
 
+    } catch (err) {
+      console.error("SAVE ERROR ", err.response?.data || err.message);
+      alert("Error saving role");
+    }
+  };
+
+  // DELETE ROLE
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Delete this role?");
+    if (!confirmDelete) return;
+
+    try {
+      await API.delete(`/api/roles/${id}`);
       fetchRoles();
     } catch (err) {
-      console.error("POST ERROR ", err.response?.data || err.message);
-      alert("Error adding role");
+      console.error("DELETE ERROR ", err);
+      alert("Error deleting role");
     }
+  };
+
+  // EDIT ROLE
+  const handleEdit = (role) => {
+    setRoleName(role.role_name || role.name);
+    setEditId(role.id || role.role_id);
   };
 
   return (
@@ -53,7 +79,7 @@ function Roles() {
 
       <h2 className="text-xl font-semibold mb-6">Roles Records</h2>
 
-      {/* ADD FORM */}
+      {/* ADD / UPDATE FORM */}
       <form onSubmit={handleSubmit} className="mb-6 flex gap-4">
         <input
           type="text"
@@ -63,8 +89,9 @@ function Roles() {
           onChange={(e) => setRoleName(e.target.value)}
           required
         />
+
         <button className="bg-black text-white px-4 py-2 rounded">
-          + Add Role
+          {editId ? "Update Role" : "+ Add Role"}
         </button>
       </form>
 
@@ -79,6 +106,7 @@ function Roles() {
             <tr className="text-left border-b">
               <th className="p-4">ID</th>
               <th className="p-4">Role Name</th>
+              <th className="p-4">Actions</th> {/* NEW */}
             </tr>
           </thead>
 
@@ -89,14 +117,32 @@ function Roles() {
                   <td className="p-4">
                     {role.id || role.role_id || index + 1}
                   </td>
+
                   <td className="p-4">
                     {role.role_name || role.name}
+                  </td>
+
+                  {/*  ACTION BUTTONS */}
+                  <td className="p-4 flex gap-2">
+                    <button
+                      onClick={() => handleEdit(role)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(role.id || role.role_id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="2" className="text-center p-4 text-gray-500">
+                <td colSpan="3" className="text-center p-4 text-gray-500">
                   No roles found
                 </td>
               </tr>

@@ -4,6 +4,8 @@ import Layout from "../components/layout/Layout";
 import AdminDashboard from "../pages/AdminDashboard";
 import GeneralDashboard from "../pages/GeneralDashboard";
 import Testing from "../pages/Testing";
+import Roles from "../features/roles/roles.jsx"; 
+import Student from "../features/student/student.jsx"; 
 
 function AppRouter() {
     return (
@@ -33,6 +35,25 @@ function AppRouter() {
 
                 {/* Testing Page - Inside Layout */}
                 <Route path="/testing" element={ <Layout> <Testing /> </Layout> } />
+                
+                {/*roles page*/}
+                <Route 
+                path="/roles" 
+                element={
+                    <Layout>
+                    <Roles />
+                    </Layout>
+                } 
+                />
+                {/*students page*/}
+                <Route
+                path="/students"
+                element={
+                    <Layout>
+                    <Student />
+                    </Layout>
+                }
+                />
 
 
                 <Route path="*" element={<Navigate to="/" />} />

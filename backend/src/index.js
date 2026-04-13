@@ -3,6 +3,13 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import testingRoutes from './routes/testing.routes.js';
 import initDatabase from "./config/initDb.js";
+import rolesRoutes from "./routes/roles.routes.js";
+import studentRoutes from "./routes/student.routes.js";
+import attendanceMasterRouter from "./routes/attendance_master.routes.js";
+import attendanceDetailsRouter from "./routes/attendanceDetails.routes.js";
+import academicRoutes from './routes/academicCalender.routes.js';
+import attendanceRouter from "./routes/View_Attendance.routes.js";
+
 
 const app = express();
 
@@ -18,6 +25,16 @@ initDatabase().catch(err => {
 app.use('/api/auth', authRoutes);
 
 app.use('/api/testing', testingRoutes);
+
+app.use("/api/roles", rolesRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/attendance-master", attendanceMasterRouter);
+app.use("/api/attendance-details", attendanceDetailsRouter);
+
+app.use('/api/academic-calender', academicRoutes);
+
+app.use("/api/attendance", attendanceRouter);
+
 
 
 

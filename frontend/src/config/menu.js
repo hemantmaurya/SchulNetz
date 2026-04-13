@@ -34,7 +34,9 @@ export const menuItems = [
         icon: Settings,
         children: [
             { name: "Courses", path: "/courses" },
-            { name: "Departments", path: "/departments" }
+            { name: "Departments", path: "/departments" },
+            { name: "Roles", path: "/roles" },
+           
         ]
     },
 ];
