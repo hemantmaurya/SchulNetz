@@ -31,7 +31,7 @@ export const menuItems = [
             {
                 name: "Attendance",
                 path: "/attendance",
-                
+
             },
 
             {
@@ -55,6 +55,17 @@ export const menuItems = [
             },
 
 
+
+            {
+                name: "Attendance",
+                path: "/attendance",
+
+            },
+
+            {
+                name: "Academic Calender",
+                path: "/academic-calender"
+            }
         ],
     },
     {
