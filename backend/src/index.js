@@ -9,6 +9,7 @@ import attendanceMasterRouter from "./routes/attendance_master.routes.js";
 import attendanceDetailsRouter from "./routes/attendanceDetails.routes.js";
 import academicRoutes from './routes/academicCalender.routes.js';
 import attendanceRouter from "./routes/View_Attendance.routes.js";
+import semesterRouter from './routes/semester.routes.js';
 
 
 const app = express();
@@ -34,6 +35,10 @@ app.use("/api/attendance-details", attendanceDetailsRouter);
 app.use('/api/academic-calender', academicRoutes);
 
 app.use("/api/attendance", attendanceRouter);
+
+app.use('/api/semesters', semesterRouter);
+
+
 
 
 

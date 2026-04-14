@@ -17,7 +17,7 @@ const login = async (req, res) => {
         const isValid = await verifyPassword(password, user.password_hash);
 
         if (!isValid) {
-            return res.status(401).json({ success: false, message: 'Invalid email or passworddd' });
+            return res.status(401).json({ success: false, message: 'Invalid email or passwordddd' });
         }
 
         const token = generateToken(user);
@@ -36,13 +36,14 @@ const login = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, message: 'Server error' });
+        res.status(500).json({ success: false, message: 'Serrver error' });
     }
 };
 
+
 const register = async (req, res) => {
     const { username, email, password, full_name, role } = req.body;
-    
+
     try {
         const hashedPassword = await hashPassword(password);
 
@@ -70,5 +71,6 @@ const register = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
 
 export { login, register };
