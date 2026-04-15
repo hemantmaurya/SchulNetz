@@ -65,7 +65,24 @@ export const menuItems = [
             {
                 name: "Academic Calender",
                 path: "/academic-calender"
-            }
+            },
+
+            {
+                name: "Semester",
+                path: "/semesters"
+            },
+
+            {
+                name: "Subjects",
+                path: "/subjects"
+            },
+
+            {
+                name: "Courses",
+                path: "/courses"
+            },
+
+
         ],
     },
     {
