@@ -12,6 +12,7 @@ import attendanceRouter from "./routes/View_Attendance.routes.js";
 import semesterRouter from './routes/semester.routes.js';
 import subjectRouter from './routes/subject.routes.js'
 import courseRoutes from './routes/course.routes.js';
+import courseSemSubRoutes from "./routes/CourseSemSub.routes.js";
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use('/api/semesters', semesterRouter);
 app.use('/api/subjects', subjectRouter);
 
 app.use('/api/courses', courseRoutes);
+
+app.use("/api/course-sem-sub", courseSemSubRoutes);
 
 
 
