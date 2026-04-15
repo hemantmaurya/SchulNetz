@@ -12,6 +12,11 @@ import Attendance from "../pages/Attendance.jsx";
 import ViewAttendance from "../pages/ViewAttendance.jsx";
 
 import AcademicCalendar from "../pages/AcademicCalender.jsx";
+import Semester from "../pages/Semester.jsx";
+import Subject from "../pages/Subject.jsx";
+import Courses from "../pages/Courses.jsx";
+
+
 <page></page>;
 
 function AppRouter() {
@@ -107,6 +112,32 @@ function AppRouter() {
                     } 
                 />
 
+                <Route 
+                    path="/semesters" 
+                    element={
+                        <Layout>
+                            <Semester />
+                        </Layout>
+                    } 
+                />
+
+                <Route 
+                    path="/subjects" 
+                    element={
+                        <Layout>
+                            <Subject />
+                        </Layout>
+                    } 
+                />
+                <Route 
+                    path="/courses" 
+                    element={
+                        <Layout>
+                            < Courses/>
+                        </Layout>
+                    } 
+                />
+                
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
