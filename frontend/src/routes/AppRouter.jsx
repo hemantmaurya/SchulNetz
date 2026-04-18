@@ -18,7 +18,7 @@ import Courses from "../pages/Courses.jsx";
 import CourseSemSub from "../pages/CourseSemSub.jsx";
 
 
-<page></page>;
+
 
 function AppRouter() {
     return (

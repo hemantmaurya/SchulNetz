@@ -1,42 +1,86 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Usage: ./scripts/make-seeder.sh SeederName"
-  echo "Example: ./scripts/make-seeder.sh TestingSeeder"
+echo "🚀 Smart Laravel-style Seeder Generator"
+echo "======================================"
+
+read -p "Enter Seeder Name (e.g. CoursesSeeder): " SEEDER_NAME
+
+if [ -z "$SEEDER_NAME" ]; then
+  echo "❌ Seeder name is required!"
   exit 1
 fi
 
-SEEDER_NAME="$1"
 TABLE_NAME=$(echo "$SEEDER_NAME" | sed 's/Seeder$//' | tr '[:upper:]' '[:lower:]')
+
+echo "🔍 Searching for migration for table '$TABLE_NAME'..."
+
+MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
+
+if [ -z "$MIGRATION_FILE" ]; then
+  echo "❌ No migration found for table '$TABLE_NAME'!"
+  read -p "Do you want to create migration first? (y/N): " create_mig
+  create_mig=$(echo "$create_mig" | tr '[:upper:]' '[:lower:]')
+  
+  if [[ "$create_mig" == "y" ]]; then
+    ./scripts/make-migration.sh
+    MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
+  else
+    echo "Seeder creation cancelled."
+    exit 1
+  fi
+fi
+
+echo "✅ Found migration: $MIGRATION_FILE"
+
+# Extract column names (excluding id, created_at, updated_at, deleted_at)
+COLUMNS=$(grep -o '^[[:space:]]*[a-z_][a-z0-9_]*[[:space:]]' "$MIGRATION_FILE" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//' | grep -v "^id$" | grep -v "^created_at$" | grep -v "^updated_at$" | grep -v "^deleted_at$")
+
+if [ -z "$COLUMNS" ]; then
+  echo "Could not extract columns. Using default columns."
+  COLUMNS="name middle_name last_name email phone age is_active notes"
+fi
+
+echo ""
+echo "Found columns: $COLUMNS"
+echo "Now enter sample data. You can add multiple rows."
+echo ""
+
+ROWS=()
+
+while true; do
+  echo "Entering data for a new row:"
+  ROW_VALUES=()
+  for col in $COLUMNS; do
+    read -p "  Value for '$col': " value
+    ROW_VALUES+=("$value")
+  done
+
+  ROWS+=("($(printf "'%s'," "${ROW_VALUES[@]}" | sed 's/,$//'))")
+
+  read -p "Add another row? (y/N): " add_more
+  add_more=$(echo "$add_more" | tr '[:upper:]' '[:lower:]')
+  if [[ "$add_more" != "y" ]]; then
+    break
+  fi
+done
 
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 FILENAME="${TIMESTAMP}_${SEEDER_NAME}.sql"
 
 docker compose exec backend sh -c "
-cat > /app/src/database/seeders/$FILENAME << 'TEMPLATE'
+cat > /app/src/database/seeders/$FILENAME << 'SEEDER'
 -- $FILENAME
--- Seeder: $SEEDER_NAME
--- Table : $TABLE_NAME
--- Created: $(date)
+-- Seeder: $SEEDER_NAME for table $TABLE_NAME
 
--- =============================================
--- TODO: Add your INSERT statements here
--- =============================================
+INSERT INTO $TABLE_NAME ($(echo $COLUMNS | tr ' ' ','))
+VALUES 
+    $(printf "%s,\n" "${ROWS[@]}" | sed '$ s/,$//')
+ON CONFLICT DO NOTHING;
 
--- Example (you can delete or modify this):
--- INSERT INTO $TABLE_NAME (name, middle_name, last_name, email, phone, age, is_active, notes)
--- VALUES 
---     (''Rahul'', ''Kumar'', ''Sharma'', ''rahul@example.com'', ''9876543210'', 28, true, ''Software Engineer''),
---     (''Priya'', ''Singh'', ''Rathore'', ''priya@example.com'', ''8765432109'', 24, true, ''Student'')
--- ON CONFLICT DO NOTHING;
-
-TEMPLATE
+SEEDER
 "
 
-echo "✅ Clean seeder template created!"
+echo "✅ Seeder created successfully!"
 echo "📁 File: backend/src/database/seeders/$FILENAME"
 echo ""
-echo "Next steps:"
-echo "1. Open the file in your editor and add your data"
-echo "2. Save it"
-echo "3. Run: docker compose restart backend"
+echo "Next step: Run 'docker compose restart backend' to apply the seeder"
