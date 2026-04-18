@@ -30,6 +30,7 @@ import AcademicCalendar from "../pages/AcademicCalender.jsx";
 import Semester from "../pages/Semester.jsx";
 import Subject from "../pages/Subject.jsx";
 import Courses from "../pages/Courses.jsx";
+import CourseSemSub from "../pages/CourseSemSub.jsx";
 
 
 
@@ -140,17 +141,17 @@ function AppRouter() {
                     }
                 />
 
-                <Route
-                    path="/semesters"
+                <Route 
+                    path="/semesters" 
                     element={
                         <Layout>
                             <Semester />
                         </Layout>
-                    }
+                    } 
                 />
 
-                <Route
-                    path="/subjects"
+                <Route 
+                    path="/subjects" 
                     element={
                         <Layout>
                             <Subject />
@@ -162,6 +163,15 @@ function AppRouter() {
                     element={
                         <Layout>
                             < Courses/>
+                        </Layout>
+                    }
+                />
+
+                <Route
+                    path="/coursesemsub"
+                    element={
+                        <Layout>
+                            < CourseSemSub/>
                         </Layout>
                     }
                 />

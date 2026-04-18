@@ -10,14 +10,14 @@ const login = async (req, res) => {
             [email]
         );
         if (result.rows.length === 0) {
-            return res.status(401).json({ success: false, message: 'Invalid email or passwordd' });
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
         const user = result.rows[0];
         const isValid = await verifyPassword(password, user.password_hash);
 
         if (!isValid) {
-            return res.status(401).json({ success: false, message: 'Invalid email or passworddd' });
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
         const token = generateToken(user);
@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     const { username, email, password, full_name, role } = req.body;
-    
+
     try {
         const hashedPassword = await hashPassword(password);
 

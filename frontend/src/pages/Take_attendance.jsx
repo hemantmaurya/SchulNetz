@@ -13,7 +13,6 @@ function TakeAttendance() {
   const [searchTerm, setSearchTerm] = useState("");
   const [bulkStatus, setBulkStatus] = useState("present");
   const [loading, setLoading] = useState(false);
-  //const [saving, setSaving] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [attendanceData, setAttendanceData] = useState({});
@@ -149,17 +148,6 @@ function TakeAttendance() {
       )}
 
       {/* Search & Bulk */}
-  // ==================== FETCH DATA ====================
-  // Fetch Master + Students
-        // Fetch Attendance Master
-        // Fetch Lecture Details
-        // Fetch Students
-        const studentsRes = await API.get(`/api/students`);
-        // ✅ Students with high limit
-        const studentsRes = await API.get(`/api/students?limit=200`); // ← Yeh change important hai
-        alert("Failed to load data");
-        alert("Failed to load students or lecture data");
-  // Bulk Mark
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="flex-1 relative">
           <Search className="absolute left-4 top-4 text-gray-400" size={20} />
