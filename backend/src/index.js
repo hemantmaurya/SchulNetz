@@ -2,8 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import testingRoutes from './routes/testing.routes.js';
-// import coursesRoutes from './routes/courses.routes.js';
-import coursesRoutes from "./routes/courses.routes.js";
 import initDatabase from "./config/initDb.js";
 import rolesRoutes from "./routes/roles.routes.js";
 import studentRoutes from "./routes/student.routes.js";
@@ -33,8 +31,27 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/testing', testingRoutes);
 
-// app.use('/api/courses', coursesRoutes);
-app.use("/api/courses", coursesRoutes);
+app.use("/api/roles", rolesRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/attendance-master", attendanceMasterRouter);
+app.use("/api/attendance-details", attendanceDetailsRouter);
+
+app.use('/api/academic-calender', academicRoutes);
+
+//app.use("/api/attendance", attendanceRouter);
+
+app.use('/api/semesters', semesterRouter);
+
+app.use('/api/subjects', subjectRouter);
+
+app.use('/api/courses', courseRoutes);
+
+app.use("/api/course-sem-sub", courseSemSubRoutes);
+app.use("/api/viewattendance",  viewattendance);
+
+
+
+
 
 
 
