@@ -13,20 +13,21 @@ function TakeAttendance() {
   const [searchTerm, setSearchTerm] = useState("");
   const [bulkStatus, setBulkStatus] = useState("present");
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const [attendanceData, setAttendanceData] = useState({});
 
-  // Fetch Master + Students
+  // ==================== FETCH DATA ====================
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch Attendance Master
+        // Fetch Lecture Details
         const masterRes = await API.get(`/api/attendance-master/${id}`);
         setMaster(masterRes.data.data);
 
-        // Fetch Students
-        const studentsRes = await API.get(`/api/students`);
+        // ✅ Students with high limit
+        const studentsRes = await API.get(`/api/students?limit=200`); // ← Yeh change important hai
         const studentList = studentsRes.data.data || [];
 
         setStudents(studentList);
@@ -41,7 +42,7 @@ function TakeAttendance() {
 
       } catch (err) {
         console.error(err);
-        alert("Failed to load data");
+        alert("Failed to load students or lecture data");
       } finally {
         setLoading(false);
       }
@@ -58,6 +59,7 @@ function TakeAttendance() {
     setFilteredStudents(filtered);
   }, [searchTerm, students]);
 
+  // Bulk Mark
   const handleBulkMark = () => {
     const updated = { ...attendanceData };
     filteredStudents.forEach(student => {
@@ -80,25 +82,28 @@ function TakeAttendance() {
     }));
   };
 
-  // Real Backend Save
+  // ==================== SAVE ATTENDANCE ====================
   const handleSaveAttendance = async () => {
+    setSaving(true);
     try {
       const payload = Object.keys(attendanceData).map(studentId => ({
         attendance_id: parseInt(id),
         student_id: parseInt(studentId),
-        status: attendanceData[studentId].status,     // "present", "absent", "leave"
+        status: attendanceData[studentId].status,
         remark: attendanceData[studentId].remark || null
       }));
 
-      const res = await API.post("/api/attendance-details/bulk", { 
+      await API.post("/api/attendance-details/bulk", { 
         attendanceDetails: payload 
       });
 
-      alert("✅ Attendance saved successfully!");
+      alert("✅ Attendance Saved Successfully!");
       navigate("/attendance-master");
     } catch (err) {
       console.error(err);
       alert("Failed to save attendance: " + (err.response?.data?.message || err.message));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -113,9 +118,10 @@ function TakeAttendance() {
         <h1 className="text-3xl font-semibold">Take Attendance</h1>
         <button
           onClick={handleSaveAttendance}
-          className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-2xl flex items-center gap-2 font-medium"
+          disabled={saving}
+          className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-2xl flex items-center gap-2 font-medium disabled:opacity-70"
         >
-          <Save size={20} /> Save Attendance
+          <Save size={20} /> {saving ? "Saving..." : "Save Attendance"}
         </button>
       </div>
 
@@ -141,7 +147,7 @@ function TakeAttendance() {
         </div>
       )}
 
-      {/* Search & Bulk Action */}
+      {/* Search & Bulk */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="flex-1 relative">
           <Search className="absolute left-4 top-4 text-gray-400" size={20} />

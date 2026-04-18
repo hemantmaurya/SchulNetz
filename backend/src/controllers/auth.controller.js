@@ -10,14 +10,14 @@ const login = async (req, res) => {
             [email]
         );
         if (result.rows.length === 0) {
-            return res.status(401).json({ success: false, message: 'Invalid email or passwordd' });
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
         const user = result.rows[0];
         const isValid = await verifyPassword(password, user.password_hash);
 
         if (!isValid) {
-            return res.status(401).json({ success: false, message: 'Invalid email or passwordddd' });
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
         const token = generateToken(user);
@@ -36,10 +36,9 @@ const login = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, message: 'Serrver error' });
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
-
 
 const register = async (req, res) => {
     const { username, email, password, full_name, role } = req.body;
@@ -71,6 +70,5 @@ const register = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
-
 
 export { login, register };

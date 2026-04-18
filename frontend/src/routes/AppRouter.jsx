@@ -15,6 +15,7 @@ import AcademicCalendar from "../pages/AcademicCalender.jsx";
 import Semester from "../pages/Semester.jsx";
 import Subject from "../pages/Subject.jsx";
 import Courses from "../pages/Courses.jsx";
+import CourseSemSub from "../pages/CourseSemSub.jsx";
 
 
 <page></page>;
@@ -137,7 +138,16 @@ function AppRouter() {
                         </Layout>
                     } 
                 />
+                <Route 
+                    path="/coursesemsub" 
+                    element={
+                        <Layout>
+                            < CourseSemSub/>
+                        </Layout>
+                    } 
+                />
                 
+
 
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

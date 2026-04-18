@@ -42,7 +42,7 @@ export const getSemestersByCourse = async (req, res) => {
                 ON s.semester_id = csa.semester_id
             WHERE csa.course_id = $1
             ORDER BY s.semester_id ASC
-        `, [courseId]);
+        `, [parseInt(courseId)]);
 
         res.json({
             success: true,
@@ -73,7 +73,7 @@ export const getSubjectsByCourseSemester = async (req, res) => {
                 ON sub.subject_id = ssa.subject_id
             WHERE ssa.course_sem_assign_id = $1
             ORDER BY sub.subject_name ASC
-        `, [courseSemAssignId]);
+        `, [parseInt(courseSemAssignId)]);
 
         res.json({
             success: true,

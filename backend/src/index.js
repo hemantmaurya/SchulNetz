@@ -8,11 +8,13 @@ import studentRoutes from "./routes/student.routes.js";
 import attendanceMasterRouter from "./routes/attendance_master.routes.js";
 import attendanceDetailsRouter from "./routes/attendanceDetails.routes.js";
 import academicRoutes from './routes/academicCalender.routes.js';
-import attendanceRouter from "./routes/View_Attendance.routes.js";
+//import viewattendance from "./routes/View_Attendance.routes.js";
 import semesterRouter from './routes/semester.routes.js';
 import subjectRouter from './routes/subject.routes.js'
 import courseRoutes from './routes/course.routes.js';
 import courseSemSubRoutes from "./routes/CourseSemSub.routes.js";
+
+import viewattendance from "./routes/View_Attendance.routes.js";
 
 const app = express();
 
@@ -36,7 +38,7 @@ app.use("/api/attendance-details", attendanceDetailsRouter);
 
 app.use('/api/academic-calender', academicRoutes);
 
-app.use("/api/attendance", attendanceRouter);
+//app.use("/api/attendance", attendanceRouter);
 
 app.use('/api/semesters', semesterRouter);
 
@@ -45,6 +47,8 @@ app.use('/api/subjects', subjectRouter);
 app.use('/api/courses', courseRoutes);
 
 app.use("/api/course-sem-sub", courseSemSubRoutes);
+app.use("/api/viewattendance",  viewattendance);
+
 
 
 
