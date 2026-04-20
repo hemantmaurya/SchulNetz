@@ -20,6 +20,10 @@ export const menuItems = [
                 path: "/students",
             },
             {
+                name: "Exams",
+                path: "/exams",
+            },
+            {
                 name: "Teachers",
                 path: "/teachers",
             },
@@ -28,13 +32,17 @@ export const menuItems = [
                 path: "/testing",
             },
             {
-                name: "Academic Calendar",
+                name: "Academic calendar",
                 path: "/academic-calendar"
             },
             {
                 name: "Attendance",
                 path: "/attendance",
 
+            },
+            {
+                name: "Academic Hub",
+                path: "/academic-hub",
             }
 
         ],

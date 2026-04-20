@@ -10,7 +10,12 @@ import academicRoutes from './routes/academicCalendar.routes.js';
 import attendanceMasterRouter from "./routes/attendance_master.routes.js";
 import attendanceDetailsRouter from "./routes/attendanceDetails.routes.js";
 import studentRoutes from "./routes/student.routes.js";
-
+import academicRouter from "./routes/academic.routes.js";
+import examRoutes from './routes/exam.routes.js';
+import courseRoutes from './routes/courseRoutes.js';
+import semesterRoutes from './routes/semesterRoutes.js';
+import examSubjectRoutes from './routes/examSubjectRoutes.js';
+import resultRoutes from './routes/resultRoutes.js';
 
 
 
@@ -40,6 +45,19 @@ app.use("/api/attendance-details", attendanceDetailsRouter);
 
 app.use("/api/students", studentRoutes);
 
+app.use("/uploads", express.static("uploads"));
+
+app.use("/api/academic", academicRouter);
+
+app.use('/api/courses', courseRoutes);
+
+app.use('/api/exams', examRoutes);
+
+app.use('/api/semesters', semesterRoutes);
+
+app.use('/api/exam-subjects', examSubjectRoutes);
+
+app.use('/api/results', resultRoutes);
 
 
 
