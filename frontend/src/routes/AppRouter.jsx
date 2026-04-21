@@ -20,7 +20,7 @@ import CourseSemSub from "../pages/CourseSemSub.jsx";
 
 
 // import CoursesPage from "../pages/CoursesPage.jsx";
-import CoursesPage from "../pages/CoursesPage";
+/*import CoursesPage from "../pages/CoursesPage";
 import AttendanceMaster from "../pages/attendance_master.jsx";
 import TakeAttendance from "../pages/Take_attendance.jsx";
 import Attendance from "../pages/Attendance.jsx";
@@ -30,7 +30,7 @@ import AcademicCalendar from "../pages/AcademicCalender.jsx";
 import Semester from "../pages/Semester.jsx";
 import Subject from "../pages/Subject.jsx";
 import Courses from "../pages/Courses.jsx";
-import CourseSemSub from "../pages/CourseSemSub.jsx";
+import CourseSemSub from "../pages/CourseSemSub.jsx";*/
 
 
 
