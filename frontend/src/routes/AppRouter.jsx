@@ -39,6 +39,7 @@ import CourseSemSub from "../pages/CourseSemSub.jsx";
 import CoursesPage from "../pages/CoursesPage";
 
 
+
 function AppRouter() {
     return (
         <BrowserRouter>
