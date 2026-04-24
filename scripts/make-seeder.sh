@@ -1,86 +1,102 @@
 #!/bin/bash
 
-echo "🚀 Smart Laravel-style Seeder Generator"
-echo "======================================"
+echo "🚀 Migration-Based Seeder Generator"
+echo "==================================="
 
-read -p "Enter Seeder Name (e.g. CoursesSeeder): " SEEDER_NAME
+read -p "Enter Seeder Name (e.g. UsersSeeder): " SEEDER_NAME
 
 if [ -z "$SEEDER_NAME" ]; then
   echo "❌ Seeder name is required!"
   exit 1
 fi
 
+# Convert Seeder name → table name
 TABLE_NAME=$(echo "$SEEDER_NAME" | sed 's/Seeder$//' | tr '[:upper:]' '[:lower:]')
 
-echo "🔍 Searching for migration for table '$TABLE_NAME'..."
+echo "🔍 Searching migration for table: $TABLE_NAME"
 
+# Find latest migration
 MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
 
 if [ -z "$MIGRATION_FILE" ]; then
-  echo "❌ No migration found for table '$TABLE_NAME'!"
-  read -p "Do you want to create migration first? (y/N): " create_mig
-  create_mig=$(echo "$create_mig" | tr '[:upper:]' '[:lower:]')
-  
-  if [[ "$create_mig" == "y" ]]; then
-    ./scripts/make-migration.sh
-    MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
-  else
-    echo "Seeder creation cancelled."
-    exit 1
-  fi
+  echo "❌ No migration found for table '$TABLE_NAME'"
+  exit 1
 fi
 
-echo "✅ Found migration: $MIGRATION_FILE"
+echo "✅ Found: $MIGRATION_FILE"
 
-# Extract column names (excluding id, created_at, updated_at, deleted_at)
-COLUMNS=$(grep -o '^[[:space:]]*[a-z_][a-z0-9_]*[[:space:]]' "$MIGRATION_FILE" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//' | grep -v "^id$" | grep -v "^created_at$" | grep -v "^updated_at$" | grep -v "^deleted_at$")
+# Extract columns safely
+COLUMNS=$(grep -E '^[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]' "$MIGRATION_FILE" \
+  | awk '{print $1}' \
+  | grep -v -E "id|created_at|updated_at|deleted_at")
 
 if [ -z "$COLUMNS" ]; then
-  echo "Could not extract columns. Using default columns."
-  COLUMNS="name middle_name last_name email phone age is_active notes"
+  echo "❌ Failed to extract columns"
+  exit 1
 fi
 
 echo ""
-echo "Found columns: $COLUMNS"
-echo "Now enter sample data. You can add multiple rows."
+echo "📋 Columns detected:"
+for col in $COLUMNS; do
+  echo "   • $col"
+done
+
+echo ""
+echo "👉 Enter data for rows"
 echo ""
 
 ROWS=()
 
 while true; do
-  echo "Entering data for a new row:"
   ROW_VALUES=()
+
+  echo "🧾 New Row:"
   for col in $COLUMNS; do
-    read -p "  Value for '$col': " value
+    read -p "  $col: " value
     ROW_VALUES+=("$value")
   done
 
-  ROWS+=("($(printf "'%s'," "${ROW_VALUES[@]}" | sed 's/,$//'))")
+  # Build SQL row
+  ROW_SQL="("
+  for val in "${ROW_VALUES[@]}"; do
+    ROW_SQL="$ROW_SQL'$val',"
+  done
+  ROW_SQL="${ROW_SQL%,})"
 
-  read -p "Add another row? (y/N): " add_more
-  add_more=$(echo "$add_more" | tr '[:upper:]' '[:lower:]')
-  if [[ "$add_more" != "y" ]]; then
-    break
-  fi
+  ROWS+=("$ROW_SQL")
+
+  read -p "Add another row? (y/N): " more
+  more=$(echo "$more" | tr '[:upper:]' '[:lower:]')
+
+  [[ "$more" != "y" ]] && break
 done
 
+# Generate file name
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 FILENAME="${TIMESTAMP}_${SEEDER_NAME}.sql"
+OUTPUT_PATH="backend/src/database/seeders/$FILENAME"
 
-docker compose exec backend sh -c "
-cat > /app/src/database/seeders/$FILENAME << 'SEEDER'
--- $FILENAME
--- Seeder: $SEEDER_NAME for table $TABLE_NAME
+echo ""
+echo "📦 Creating seeder file..."
+
+# Ensure directory exists
+mkdir -p backend/src/database/seeders
+
+# Write file LOCALLY (IMPORTANT FIX)
+cat > "$OUTPUT_PATH" <<SQL
+-- Seeder: $SEEDER_NAME
+-- Table: $TABLE_NAME
+-- Created: $(date)
 
 INSERT INTO $TABLE_NAME ($(echo $COLUMNS | tr ' ' ','))
-VALUES 
-    $(printf "%s,\n" "${ROWS[@]}" | sed '$ s/,$//')
-ON CONFLICT DO NOTHING;
+VALUES
+$(printf "    %s,\n" "${ROWS[@]}" | sed '$ s/,$//');
 
-SEEDER
-"
+SQL
 
 echo "✅ Seeder created successfully!"
-echo "📁 File: backend/src/database/seeders/$FILENAME"
+echo "📁 $OUTPUT_PATH"
+
 echo ""
-echo "Next step: Run 'docker compose restart backend' to apply the seeder"
+echo "👉 To run seeder:"
+echo "docker compose exec db psql -U postgres -d YOUR_DB -f src/database/seeders/$FILENAME"
