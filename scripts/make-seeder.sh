@@ -25,19 +25,36 @@ fi
 
 echo "✅ Found: $MIGRATION_FILE"
 
-# Extract columns safely
-COLUMNS=$(grep -E '^[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]' "$MIGRATION_FILE" \
-  | awk '{print $1}' \
-  | grep -v -E "id|created_at|updated_at|deleted_at")
+# -------------------------------
+# ✅ IMPROVED COLUMN EXTRACTION
+# -------------------------------
+COLUMNS=()
+COLUMN_TYPES=()
 
-if [ -z "$COLUMNS" ]; then
+while IFS= read -r line; do
+  # Match column lines only
+  if [[ $line =~ ^[[:space:]]+([a-zA-Z_][a-zA-Z0-9_]*)[[:space:]]+([a-zA-Z]+) ]]; then
+    col="${BASH_REMATCH[1]}"
+    type="${BASH_REMATCH[2]}"
+
+    # Skip unwanted columns
+    if [[ "$col" =~ ^(id|created_at|updated_at|deleted_at)$ ]]; then
+      continue
+    fi
+
+    COLUMNS+=("$col")
+    COLUMN_TYPES+=("$type")
+  fi
+done < "$MIGRATION_FILE"
+
+if [ ${#COLUMNS[@]} -eq 0 ]; then
   echo "❌ Failed to extract columns"
   exit 1
 fi
 
 echo ""
 echo "📋 Columns detected:"
-for col in $COLUMNS; do
+for col in "${COLUMNS[@]}"; do
   echo "   • $col"
 done
 
@@ -48,21 +65,33 @@ echo ""
 ROWS=()
 
 while true; do
-  ROW_VALUES=()
-
-  echo "🧾 New Row:"
-  for col in $COLUMNS; do
-    read -p "  $col: " value
-    ROW_VALUES+=("$value")
-  done
-
-  # Build SQL row
   ROW_SQL="("
-  for val in "${ROW_VALUES[@]}"; do
-    ROW_SQL="$ROW_SQL'$val',"
-  done
-  ROW_SQL="${ROW_SQL%,})"
+  echo "🧾 New Row:"
 
+  for i in "${!COLUMNS[@]}"; do
+    col="${COLUMNS[$i]}"
+    type="${COLUMN_TYPES[$i]}"
+
+    read -p "  $col: " value
+
+    # Handle NULL
+    if [ -z "$value" ]; then
+      ROW_SQL+="NULL,"
+      continue
+    fi
+
+    # Escape single quotes
+    value=$(echo "$value" | sed "s/'/''/g")
+
+    # Detect numeric types
+    if [[ "$type" =~ ^(INTEGER|INT|BIGINT|SMALLINT|DECIMAL|NUMERIC)$ ]]; then
+      ROW_SQL+="$value,"
+    else
+      ROW_SQL+="'$value',"
+    fi
+  done
+
+  ROW_SQL="${ROW_SQL%,})"
   ROWS+=("$ROW_SQL")
 
   read -p "Add another row? (y/N): " more
@@ -79,16 +108,18 @@ OUTPUT_PATH="backend/src/database/seeders/$FILENAME"
 echo ""
 echo "📦 Creating seeder file..."
 
-# Ensure directory exists
 mkdir -p backend/src/database/seeders
 
-# Write file LOCALLY (IMPORTANT FIX)
+# Join column names with comma safely
+COLUMN_LIST=$(IFS=, ; echo "${COLUMNS[*]}")
+
+# Write SQL file
 cat > "$OUTPUT_PATH" <<SQL
 -- Seeder: $SEEDER_NAME
 -- Table: $TABLE_NAME
 -- Created: $(date)
 
-INSERT INTO $TABLE_NAME ($(echo $COLUMNS | tr ' ' ','))
+INSERT INTO $TABLE_NAME ($COLUMN_LIST)
 VALUES
 $(printf "    %s,\n" "${ROWS[@]}" | sed '$ s/,$//');
 
