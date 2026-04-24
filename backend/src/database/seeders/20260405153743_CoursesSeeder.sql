@@ -5,4 +5,14 @@ INSERT INTO courses (name)
 VALUES 
     ('B.Tech')
 ON CONFLICT DO NOTHING;
-
+--
+-- We should always celebrate our failuer
+--
+-- Methods of manifestration
+-- Writring
+--
+-- Recoding
+--
+-- Visualization
+--
+-- Visualization and Recording

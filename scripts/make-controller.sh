@@ -1,31 +1,21 @@
 #!/bin/bash
 
-echo "🚀 Smart Laravel-style Controller Generator"
-echo "=========================================="
+echo "🚀 Simple & Clean Controller Generator"
+echo "====================================="
 
 read -p "Enter Controller Name (e.g. CoursesController): " CONTROLLER_NAME
 if [ -z "$CONTROLLER_NAME" ]; then
-  echo "❌ Controller name is required!"
+  echo "❌ Name required!"
   exit 1
 fi
 
 TABLE_NAME=$(echo "$CONTROLLER_NAME" | sed 's/Controller$//' | tr '[:upper:]' '[:lower:]')
 
-echo "🔍 Searching for migration for table '$TABLE_NAME'..."
-
 MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
 
 if [ -z "$MIGRATION_FILE" ]; then
   echo "❌ No migration found for table '$TABLE_NAME'!"
-  read -p "Do you want to create migration first? (y/N): " create_mig
-  create_mig=$(echo "$create_mig" | tr '[:upper:]' '[:lower:]')
-  if [[ "$create_mig" == "y" ]]; then
-    ./scripts/make-migration.sh
-    MIGRATION_FILE=$(ls backend/src/database/migrations/*create_${TABLE_NAME}_table.sql 2>/dev/null | sort | tail -1)
-  else
-    echo "Cancelled."
-    exit 1
-  fi
+  exit 1
 fi
 
 echo "✅ Using migration: $MIGRATION_FILE"
@@ -43,12 +33,12 @@ fi
 
 echo ""
 echo "Which functions do you want?"
-read -p "  Create (Save)               ? (y/N): " want_create
-read -p "  Pagination                  ? (y/N): " want_pagination
-read -p "  Simple List                 ? (y/N): " want_simple
-read -p "  Get by ID                   ? (y/N): " want_byid
-read -p "  Update                      ? (y/N): " want_update
-read -p "  Soft Delete                 ? (y/N): " want_delete
+read -p "  Create? (y/N): " want_create
+read -p "  Pagination? (y/N): " want_pagination
+read -p "  Simple List? (y/N): " want_simple
+read -p "  Get by ID? (y/N): " want_byid
+read -p "  Update? (y/N): " want_update
+read -p "  Soft Delete? (y/N): " want_delete
 
 want_create=$(echo "$want_create" | tr '[:upper:]' '[:lower:]')
 want_pagination=$(echo "$want_pagination" | tr '[:upper:]' '[:lower:]')
@@ -60,7 +50,7 @@ want_delete=$(echo "$want_delete" | tr '[:upper:]' '[:lower:]')
 echo "Generating controller..."
 
 docker compose exec backend sh -c '
-cat > /app/src/controllers/'${CONTROLLER_NAME}'.js << "CONTROLLER"
+cat > /app/src/controllers/'${CONTROLLER_NAME}'.js << "BASE"
 import pool from "../config/db.js";
 
 /*
@@ -68,19 +58,24 @@ import pool from "../config/db.js";
  * Table: '${TABLE_NAME}'
  */
 
-CONTROLLER
+BASE
 '
 
-# Append functions one by one (this is the reliable way)
+# Create
 if [ "$want_create" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "CREATE"
+// ======================== CREATE ========================
 export const '${TABLE_NAME}'Save = async (req, res) => {
-    const { name, course_name, description } = req.body;
+    const data = req.body;
     try {
+        const columns = Object.keys(data);
+        const values = Object.values(data);
+        const placeholders = columns.map((_, i) => "$" + (i+1)).join(", ");
+
         const result = await pool.query(
-            "INSERT INTO '${TABLE_NAME}' (name, course_name, description) VALUES ($1, $2, $3) RETURNING *",
-            [name, course_name, description]
+            "INSERT INTO '${TABLE_NAME}' (" + columns.join(", ") + ") VALUES (" + placeholders + ") RETURNING *",
+            values
         );
         res.status(201).json({
             success: true,
@@ -96,9 +91,11 @@ CREATE
 '
 fi
 
+# Pagination
 if [ "$want_pagination" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "PAG"
+// ======================== READ ALL - With Pagination ========================
 export const get'${TABLE_NAME}'All = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -131,9 +128,11 @@ PAG
 '
 fi
 
+# Simple List
 if [ "$want_simple" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "SIMPLE"
+// ======================== READ ALL - Simple ========================
 export const get'${TABLE_NAME}'AllSimple = async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM '${TABLE_NAME}' ORDER BY id DESC");
@@ -150,9 +149,11 @@ SIMPLE
 '
 fi
 
+# Get by ID
 if [ "$want_byid" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "BYID"
+// ======================== READ BY ID ========================
 export const get'${TABLE_NAME}'ById = async (req, res) => {
     const { id } = req.params;
     try {
@@ -169,16 +170,22 @@ BYID
 '
 fi
 
+# Update
 if [ "$want_update" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "UPDATE"
+// ======================== UPDATE ========================
 export const '${TABLE_NAME}'Update = async (req, res) => {
     const { id } = req.params;
-    const { name, course_name, description } = req.body;
+    const data = req.body;
+    const columns = Object.keys(data);
+    const values = Object.values(data);
+    const setClause = columns.map((col, i) => col + " = $" + (i+1)).join(", ");
+
     try {
         const result = await pool.query(
-            "UPDATE '${TABLE_NAME}' SET name = $1, course_name = $2, description = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *",
-            [name, course_name, description, id]
+            "UPDATE '${TABLE_NAME}' SET " + setClause + ", updated_at = CURRENT_TIMESTAMP WHERE id = $" + (values.length + 1) + " RETURNING *",
+            [...values, id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: "Record not found" });
@@ -196,9 +203,11 @@ UPDATE
 '
 fi
 
+# Soft Delete
 if [ "$want_delete" = "y" ]; then
   docker compose exec backend sh -c '
 cat >> /app/src/controllers/'${CONTROLLER_NAME}'.js << "DELETE"
+// ======================== SOFT DELETE ========================
 export const '${TABLE_NAME}'Delete = async (req, res) => {
     const { id } = req.params;
     try {
