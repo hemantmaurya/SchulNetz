@@ -13,6 +13,12 @@ const registerSchema = Joi.object({
     role: Joi.string().valid('admin', 'teacher', 'student', 'parent').default('user')
 });
 
+const studentSchema = Joi.object({
+    name: Joi.string().min(2).max(100).required(),
+    course_id: Joi.number().integer().required(),
+    branch_id: Joi.number().integer().required()
+});
+
 const validate = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body);
@@ -27,4 +33,5 @@ const validate = (schema) => {
 };
 
 export const validateLogin = validate(loginSchema);
-export const validateRegister = validate(registerSchema);
+export const validateRegister = validate(registerSchema)
+export const validateStudent = validate(studentSchema);
